@@ -19,4 +19,16 @@
         android:hint="Input"
         android:inputType="text"/>
 
+    <Button
+        android:id="@+id/button_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_text"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mobileList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
 </LinearLayout>
