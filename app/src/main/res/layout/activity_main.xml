@@ -16,14 +16,27 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:layout_margin="16dp"
-        android:hint="Input"
+        android:textSize="16sp"
+        android:hint="Enter next shopping item here"
         android:inputType="text"/>
 
     <Button
         android:id="@+id/button_send"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_text"/>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save shopping list"/>
+
+    <Button
+        android:id="@+id/button_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Load shopping list"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mobileList"

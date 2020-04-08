@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 
-class MyAdapter(private val myDataset: Array<String>) :
+class MyAdapter(private val myDataset: ArrayList<String>) :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
+
     class MyViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
 
         val textView: TextView
@@ -42,4 +43,10 @@ class MyAdapter(private val myDataset: Array<String>) :
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myDataset.size
+
+    fun addItem(itemName : String) {
+        myDataset.add(itemName)
+        //notifyItemRangeChanged(myDataset.lastIndex, 1)
+        notifyDataSetChanged()
+    }
 }

@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.content.SharedPreferences
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -24,20 +25,46 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var listView : ListView
 
-    var array = arrayOf("Melbourne", "Vienna", "Vancouver")
+    var shoppingList = ArrayList<String>()
+
+    var adapter = MyAdapter(shoppingList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         button_send.setOnClickListener {
-
-            Log.d("MainActivity", "Button clicked")
+            Log.d("MainActivity", "Add clicked")
+            val newItemName : String = editText.text.toString()
+            adapter.addItem(newItemName)
+            editText.text.clear()
         }
+
+        button_save.setOnClickListener {
+            Log.d("MainActivity", "Save clicked")
+            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+            val spe = sp.edit()
+            val saveData = HashSet<String>()
+            saveData.addAll(shoppingList)
+            spe.putStringSet("Items", saveData)
+        }
+
+        button_load.setOnClickListener {
+            Log.d("MainActivity", "Load clicked")
+            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+            val loadData = sp.getStringSet("Items", null)
+            if( loadData != null ) {
+                shoppingList.clear()
+                shoppingList.addAll(loadData)
+            }
+        }
+
+        adapter.addItem("bananas")
+        adapter.addItem("chicken")
 
         mobileList.setHasFixedSize(true)
         mobileList.layoutManager = LinearLayoutManager(this)
-        mobileList.adapter = MyAdapter(array)
+        mobileList.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
