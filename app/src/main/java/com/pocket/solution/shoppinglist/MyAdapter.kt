@@ -5,9 +5,12 @@ import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import android.content.SharedPreferences
 
-class MyAdapter(private val myDataset: ArrayList<String>) :
+class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+
+    private val myDataset: ArrayList<String> = ArrayList<String>()
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -48,5 +51,21 @@ class MyAdapter(private val myDataset: ArrayList<String>) :
         myDataset.add(itemName)
         //notifyItemRangeChanged(myDataset.lastIndex, 1)
         notifyDataSetChanged()
+    }
+
+    fun save(spe : SharedPreferences.Editor, name : String) {
+        val saveData = HashSet<String>()
+        saveData.addAll(myDataset)
+        spe.putStringSet(name, saveData)
+        spe.commit()
+    }
+
+    fun load(sp : SharedPreferences, name : String) {
+        val loadData = sp.getStringSet(name, null)
+        if (loadData != null) {
+            myDataset.clear()
+            myDataset.addAll(loadData)
+            notifyDataSetChanged()
+        }
     }
 }

@@ -25,9 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var listView : ListView
 
-    var shoppingList = ArrayList<String>()
-
-    var adapter = MyAdapter(shoppingList)
+    private var adapter = MyAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,19 +42,13 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Save clicked")
             val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
             val spe = sp.edit()
-            val saveData = HashSet<String>()
-            saveData.addAll(shoppingList)
-            spe.putStringSet("Items", saveData)
+            adapter.save(spe, "Items")
         }
 
         button_load.setOnClickListener {
             Log.d("MainActivity", "Load clicked")
             val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-            val loadData = sp.getStringSet("Items", null)
-            if( loadData != null ) {
-                shoppingList.clear()
-                shoppingList.addAll(loadData)
-            }
+            adapter.load(sp, "Items")
         }
 
         adapter.addItem("bananas")
@@ -65,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         mobileList.setHasFixedSize(true)
         mobileList.layoutManager = LinearLayoutManager(this)
         mobileList.adapter = adapter
+
+        val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+        adapter.load(sp, "Items")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
