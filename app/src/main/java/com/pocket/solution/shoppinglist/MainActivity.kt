@@ -21,10 +21,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    var items :  List<ShoppingListItem> = emptyList()
-
-    private lateinit var listView : ListView
-
     private var adapter = MyAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             adapter.addItem(newItemName)
             editText.text.clear()
         }
-
+/*
         button_save.setOnClickListener {
             Log.d("MainActivity", "Save clicked")
             val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
@@ -51,15 +47,29 @@ class MainActivity : AppCompatActivity() {
             adapter.load(sp, "Items")
         }
 
-        adapter.addItem("bananas")
-        adapter.addItem("chicken")
+        button_save_json.setOnClickListener {
+            Log.d("MainActivity", "Save Json clicked")
+            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+            val spe = sp.edit()
+            adapter.saveAsJson(spe, "ItemsAsJson")
+        }
 
+        button_load_json.setOnClickListener {
+            Log.d("MainActivity", "Load Json clicked")
+            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+            adapter.loadFromJson(sp, "ItemsAsJson")
+        }
+*/
         mobileList.setHasFixedSize(true)
         mobileList.layoutManager = LinearLayoutManager(this)
         mobileList.adapter = adapter
 
-        val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-        adapter.load(sp, "Items")
+        loadAppData()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        saveAppData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,7 +88,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendMessage(view: View) {
+    fun loadAppData() {
+        val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+        adapter.loadFromJson(sp, "ItemsAsJson")
+    }
 
+    fun saveAppData() {
+        val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
+        val spe = sp.edit()
+        adapter.saveAsJson(spe, "ItemsAsJson")
     }
 }

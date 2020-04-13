@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+
+
 
 class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    private val myDataset: ArrayList<String> = ArrayList<String>()
+    private var myDataset: ArrayList<String> = ArrayList<String>()
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -54,7 +58,9 @@ class MyAdapter() :
     }
 
     fun save(spe : SharedPreferences.Editor, name : String) {
-        val saveData = HashSet<String>()
+        val serializedData = serializeAsJson(myDataset)
+
+        val saveData = mutableSetOf<String>()
         saveData.addAll(myDataset)
         spe.putStringSet(name, saveData)
         spe.commit()
@@ -66,6 +72,34 @@ class MyAdapter() :
             myDataset.clear()
             myDataset.addAll(loadData)
             notifyDataSetChanged()
+        }
+    }
+
+    fun saveAsJson(spe : SharedPreferences.Editor, name : String) {
+        val saveData = serializeAsJson(myDataset)
+        spe.putString(name, saveData)
+        spe.commit()
+    }
+
+    fun loadFromJson(sp : SharedPreferences, name : String) {
+        val loadDataString = sp.getString(name, null)
+        val loadData : ArrayList<String> = deserializeFromJson(loadDataString)
+        if( loadData != null) {
+            myDataset = loadData
+//            myDataset.clear()
+//            myDataset.addAll(loadData)
+            notifyDataSetChanged()
+        }
+    }
+
+    companion object JsonHelpers {
+        fun <E> serializeAsJson(data: ArrayList<E>): String {
+            val builder = com.google.gson.GsonBuilder().setPrettyPrinting().create()
+            return builder.toJson(data)
+        }
+
+        fun <E> deserializeFromJson(data: String): ArrayList<E> {
+            return GsonBuilder().create().fromJson(data, ArrayList<E>().javaClass)
         }
     }
 }

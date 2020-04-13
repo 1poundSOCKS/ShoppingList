@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:text="@string/button_text"/>
 
-    <Button
+    <!--Button
         android:id="@+id/button_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,6 +37,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Load shopping list"/>
+
+    <Button
+        android:id="@+id/button_save_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save shopping list as Json"/>
+
+    <Button
+        android:id="@+id/button_load_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Load shopping list from Json"/-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mobileList"
