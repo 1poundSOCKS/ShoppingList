@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
 
         button_send.setOnClickListener {
             Log.d("MainActivity", "Add clicked")
@@ -33,33 +34,7 @@ class MainActivity : AppCompatActivity() {
             adapter.addItem(newItemName)
             editText.text.clear()
         }
-/*
-        button_save.setOnClickListener {
-            Log.d("MainActivity", "Save clicked")
-            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-            val spe = sp.edit()
-            adapter.save(spe, "Items")
-        }
 
-        button_load.setOnClickListener {
-            Log.d("MainActivity", "Load clicked")
-            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-            adapter.load(sp, "Items")
-        }
-
-        button_save_json.setOnClickListener {
-            Log.d("MainActivity", "Save Json clicked")
-            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-            val spe = sp.edit()
-            adapter.saveAsJson(spe, "ItemsAsJson")
-        }
-
-        button_load_json.setOnClickListener {
-            Log.d("MainActivity", "Load Json clicked")
-            val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-            adapter.loadFromJson(sp, "ItemsAsJson")
-        }
-*/
         mobileList.setHasFixedSize(true)
         mobileList.layoutManager = LinearLayoutManager(this)
         mobileList.adapter = adapter

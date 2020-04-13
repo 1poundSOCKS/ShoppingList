@@ -10,6 +10,15 @@
     android:titleTextAppearance="@color/colorTitleBar"
     >
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
@@ -25,30 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_text"/>
-
-    <!--Button
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save shopping list"/>
-
-    <Button
-        android:id="@+id/button_load"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Load shopping list"/>
-
-    <Button
-        android:id="@+id/button_save_json"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save shopping list as Json"/>
-
-    <Button
-        android:id="@+id/button_load_json"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Load shopping list from Json"/-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mobileList"
