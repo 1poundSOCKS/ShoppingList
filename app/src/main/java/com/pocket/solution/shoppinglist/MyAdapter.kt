@@ -5,11 +5,7 @@ import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.content.SharedPreferences
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-
-
 
 class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
@@ -53,41 +49,17 @@ class MyAdapter() :
 
     fun addItem(itemName : String) {
         myDataset.add(itemName)
-        //notifyItemRangeChanged(myDataset.lastIndex, 1)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(myDataset.lastIndex, 1)
     }
 
-    fun save(spe : SharedPreferences.Editor, name : String) {
-        val serializedData = serializeAsJson(myDataset)
-
-        val saveData = mutableSetOf<String>()
-        saveData.addAll(myDataset)
-        spe.putStringSet(name, saveData)
-        spe.commit()
+    fun saveAsJson() : String {
+        return serializeAsJson(myDataset)
     }
 
-    fun load(sp : SharedPreferences, name : String) {
-        val loadData = sp.getStringSet(name, null)
-        if (loadData != null) {
-            myDataset.clear()
-            myDataset.addAll(loadData)
-            notifyDataSetChanged()
-        }
-    }
-
-    fun saveAsJson(spe : SharedPreferences.Editor, name : String) {
-        val saveData = serializeAsJson(myDataset)
-        spe.putString(name, saveData)
-        spe.commit()
-    }
-
-    fun loadFromJson(sp : SharedPreferences, name : String) {
-        val loadDataString = sp.getString(name, null)
-        val loadData : ArrayList<String> = deserializeFromJson(loadDataString)
+    fun loadFromJson(data : String) {
+        val loadData : ArrayList<String> = deserializeFromJson(data)
         if( loadData != null) {
             myDataset = loadData
-//            myDataset.clear()
-//            myDataset.addAll(loadData)
             notifyDataSetChanged()
         }
     }

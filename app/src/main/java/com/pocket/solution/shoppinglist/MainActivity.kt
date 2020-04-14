@@ -65,12 +65,15 @@ class MainActivity : AppCompatActivity() {
 
     fun loadAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-        adapter.loadFromJson(sp, "ItemsAsJson")
+        val loadDataString = sp.getString("ItemsAsJson", null)
+        adapter.loadFromJson(loadDataString)
     }
 
     fun saveAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
         val spe = sp.edit()
-        adapter.saveAsJson(spe, "ItemsAsJson")
+        val data = adapter.saveAsJson()
+        spe.putString("ItemsAsJson", data)
+        spe.commit()
     }
 }
