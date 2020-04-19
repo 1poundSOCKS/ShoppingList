@@ -1,11 +1,14 @@
 package com.pocket.solution.shoppinglist
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import com.google.gson.GsonBuilder
+import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
+import android.widget.Toast
+import android.util.Log
 
 class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
@@ -17,13 +20,12 @@ class MyAdapter() :
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
 
-    class MyViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
+    class MyViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
 
-        val textView: TextView
-
-        init {
-            // Define click listener for the ViewHolder's View.
-            textView = v.findViewById(R.id.textView)
+        fun bind(itemName : String)
+        {
+            v.textView.text = itemName
+            v.setOnClickListener { v.textView.setTextColor(Color.BLUE) }
         }
     }
 
@@ -41,7 +43,7 @@ class MyAdapter() :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textView.text = myDataset[position]
+        holder.bind(myDataset[position])
     }
 
     // Return the size of your dataset (invoked by the layout manager)

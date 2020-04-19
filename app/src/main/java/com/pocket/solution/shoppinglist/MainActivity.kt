@@ -1,21 +1,11 @@
 package com.pocket.solution.shoppinglist
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
-import android.text.TextWatcher
-import android.text.Editable
-import android.widget.ListView
-import android.support.v7.widget.RecyclerView
-import android.view.View
-import android.widget.ArrayAdapter
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.content.SharedPreferences
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -63,13 +53,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loadAppData() {
+    private fun loadAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
         val loadDataString = sp.getString("ItemsAsJson", null)
         adapter.loadFromJson(loadDataString)
     }
 
-    fun saveAppData() {
+    private fun saveAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
         val spe = sp.edit()
         val data = adapter.saveAsJson()
