@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         mobileList.layoutManager = LinearLayoutManager(this)
         mobileList.adapter = adapter
 
-        loadAppData()
+        //loadAppData()
     }
 
     override fun onStop() {

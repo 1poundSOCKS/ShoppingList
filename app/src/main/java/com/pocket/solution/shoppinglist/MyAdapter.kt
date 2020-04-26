@@ -5,15 +5,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
-import android.widget.Toast
-import android.util.Log
 
 class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    private var myDataset: ArrayList<String> = ArrayList<String>()
+    private var items: ShoppingListData = createEmptyShoppingList()
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -43,37 +40,23 @@ class MyAdapter() :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.bind(myDataset[position])
+        holder.bind(items.items.items[position].name)
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = myDataset.size
+    override fun getItemCount() = items.items.items.size
 
     fun addItem(itemName : String) {
-        myDataset.add(itemName)
-        notifyItemRangeChanged(myDataset.lastIndex, 1)
+        addItemToShoppingList(itemName, items)
+        notifyItemRangeChanged(items.items.items.lastIndex, 1)
     }
 
     fun saveAsJson() : String {
-        return serializeAsJson(myDataset)
+        return serializeShoppingListDataAsJson(items)
     }
 
     fun loadFromJson(data : String) {
-        val loadData : ArrayList<String> = deserializeFromJson(data)
-        if( loadData != null) {
-            myDataset = loadData
-            notifyDataSetChanged()
-        }
-    }
-
-    companion object JsonHelpers {
-        fun <E> serializeAsJson(data: ArrayList<E>): String {
-            val builder = com.google.gson.GsonBuilder().setPrettyPrinting().create()
-            return builder.toJson(data)
-        }
-
-        fun <E> deserializeFromJson(data: String): ArrayList<E> {
-            return GsonBuilder().create().fromJson(data, ArrayList<E>().javaClass)
-        }
+        items = deserializeShoppingListDataFromJson(data)
+        notifyDataSetChanged()
     }
 }

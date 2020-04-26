@@ -16,71 +16,59 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun createNewShoppingList_works() {
+    fun createEmptyShoppingList_works() {
 
-        val list = createNewShoppingList("bananas")
-        assertEquals(list.size, 1)
-        assertEquals(list[0].Name, "bananas")
+        val list = createEmptyShoppingList()
+        assertEquals(list.items.items.size, 0)
     }
 
     @Test
     fun addNewItemToShoppingList_works() {
 
-        val list = createNewShoppingList("bananas")
-        assertEquals(list.size, 1)
-        assertEquals(list[0].Name, "bananas")
+        val list = createEmptyShoppingList()
+        assertEquals(list.items.items.size, 0)
 
-        val list2 = addToShoppingList("eggs", list)
-        assertEquals(list2.size, 2)
-        assertEquals(list2[0].Name, "bananas")
-        assertEquals(list2[1].Name, "eggs")
+        addItemToShoppingList("bananas", list)
+        assertEquals(list.items.items.size, 1)
+        assertEquals(list.items.items[0].name, "bananas")
 
-        val list3 = addToShoppingList("chicken", list2)
-        assertEquals(list3.size, 3)
-        assertEquals(list3[0].Name, "bananas")
-        assertEquals(list3[1].Name, "eggs")
-        assertEquals(list3[2].Name, "chicken")
+        addItemToShoppingList("eggs", list)
+        assertEquals(list.items.items.size, 2)
+        assertEquals(list.items.items[0].name, "bananas")
+        assertEquals(list.items.items[1].name, "eggs")
+
+        addItemToShoppingList("chicken", list)
+        assertEquals(list.items.items.size, 3)
+        assertEquals(list.items.items[0].name, "bananas")
+        assertEquals(list.items.items[1].name, "eggs")
+        assertEquals(list.items.items[2].name, "chicken")
     }
 
-    fun <E>testShoppingListPersistence(data : ArrayList<E>) {
-        val serializedData : String = MyAdapter.serializeAsJson(data)
-        val deserializedData : ArrayList<String> = MyAdapter.deserializeFromJson(serializedData)
-        assertTrue(data == deserializedData)
+    private fun testShoppingListPersistence(data : ShoppingListData) {
+        val serializedData = serializeShoppingListDataAsJson(data)
+        val deserializedData = deserializeShoppingListDataFromJson(serializedData)
+        val success = (data.items == deserializedData.items)
+        assertTrue("ShoppingListData serialisation unsuccessful", success)
     }
 
     @Test
     fun emptyShoppingList_works() {
-        val data : ArrayList<String> = ArrayList<String>()
+        val data = createEmptyShoppingList()
         testShoppingListPersistence(data)
     }
 
     @Test
     fun singleItemShoppingList_works() {
-        val data : ArrayList<String> = ArrayList<String>()
-        data.add("bananas")
+        val data = createShoppingList(arrayOf("bananas"))
         testShoppingListPersistence(data)
     }
 
     @Test
     fun manyItemShoppingList_works() {
-        val data : ArrayList<String> = ArrayList<String>()
-        data.add("bananas")
-        data.add("eggs")
-        data.add("paper")
-        data.add("berries")
-        data.add("chicken")
-        data.add("tea bags")
-        data.add("milk")
+        val data = createShoppingList(arrayOf("bananas", "eggs", "paper", "berries", "chicken", "tea bags", "milk"))
         testShoppingListPersistence(data)
 
-        val reverseData : ArrayList<String> = ArrayList<String>()
-        reverseData.add("milk")
-        reverseData.add("tea bags")
-        reverseData.add("chicken")
-        reverseData.add("berries")
-        reverseData.add("paper")
-        reverseData.add("eggs")
-        reverseData.add("bananas")
+        val reverseData = createShoppingList(arrayOf("milk", "tea bags", "chicken", "berries", "paper", "eggs", "bananas"))
         testShoppingListPersistence(reverseData)
 
         assertFalse(data == reverseData)
