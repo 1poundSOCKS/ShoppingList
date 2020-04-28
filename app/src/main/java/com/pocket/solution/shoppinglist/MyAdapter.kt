@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    private var items: ShoppingListData = createEmptyShoppingList()
+    private var data: ShoppingListData = ShoppingListData.create(emptyArray())
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -19,10 +19,16 @@ class MyAdapter() :
 
     class MyViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
 
-        fun bind(itemName : String)
+        fun bind(item : ShoppingListItem)
         {
-            v.textView.text = itemName
-            v.setOnClickListener { v.textView.setTextColor(Color.BLUE) }
+            v.textView.text = item.name
+            v.textView.setTextColor(Color.BLACK)
+            v.setOnClickListener {
+                if ( item.select() )
+                    v.textView.setTextColor(Color.BLUE)
+                else
+                    v.textView.setTextColor(Color.BLACK)
+            }
         }
     }
 
@@ -40,23 +46,31 @@ class MyAdapter() :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.bind(items.items.items[position].name)
+        //holder.bind(data.itemName(position))
+        holder.bind(data.items.getItem(position))
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = items.items.items.size
+    override fun getItemCount() = data.itemCount
 
     fun addItem(itemName : String) {
-        addItemToShoppingList(itemName, items)
-        notifyItemRangeChanged(items.items.items.lastIndex, 1)
-    }
-
-    fun saveAsJson() : String {
-        return serializeShoppingListDataAsJson(items)
-    }
-
-    fun loadFromJson(data : String) {
-        items = deserializeShoppingListDataFromJson(data)
+        data.addItem(itemName)
+        //notifyItemRangeChanged(data.lastItemIndex, 1)
         notifyDataSetChanged()
     }
+
+    fun saveAsJson() : String = data.serialize()
+
+    fun loadFromJson(jsonData : String) {
+        data = ShoppingListData.create(jsonData)
+        notifyDataSetChanged()
+    }
+
+    private val ShoppingListData.lastItemIndex: Int
+        get() = items.items.lastIndex
+
+    private val ShoppingListData.itemCount: Int
+        get() = items.items.size
+
+    private fun ShoppingListData.itemName(pos : Int) = items.items[pos].name
 }
