@@ -23,11 +23,15 @@ class MyAdapter() :
         {
             v.textView.text = item.name
             v.textView.setTextColor(Color.BLACK)
+            v.textView2.text = item.quantity.toString()
+            v.textView2.setTextColor(Color.BLUE)
             v.setOnClickListener {
-                if ( item.select() )
-                    v.textView.setTextColor(Color.BLUE)
-                else
-                    v.textView.setTextColor(Color.BLACK)
+                if ( item.select() ) {
+                    v.textView.setBackgroundColor(Color.LTGRAY)
+                }
+                else {
+                    v.textView.setBackgroundColor(Color.WHITE)
+                }
             }
         }
     }
@@ -56,6 +60,11 @@ class MyAdapter() :
     fun addItem(itemName : String) {
         data.addItem(itemName)
         //notifyItemRangeChanged(data.lastItemIndex, 1)
+        notifyDataSetChanged()
+    }
+
+    fun deleteSelectedItems() {
+        data.deleteSelectedItems()
         notifyDataSetChanged()
     }
 

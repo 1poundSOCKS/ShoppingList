@@ -5,9 +5,18 @@ import com.google.gson.GsonBuilder
 fun <E> String.convertToArrayList() : ArrayList<E> = GsonBuilder().create().fromJson(this, ArrayList<E>().javaClass)
 
 class ShoppingListData(val items : ShoppingListItems) {
+
+    val isEmpty : Boolean
+        get() = items.items.size == 0
+
     fun addItem(name: String) = items.items.add(ShoppingListItem(name, 1))
     fun serialize(): String = items.convertNamesToJson()
     fun selectItem(index: Int): Boolean = items.selectItem(index)
+    fun deleteSelectedItems() {
+        val remainingItems = items.items.filter { item -> !item.selected }
+        items.items.clear()
+        items.items.addAll(remainingItems)
+    }
 
     companion object {
         fun create(itemNames : Array<String>): ShoppingListData =
@@ -18,7 +27,7 @@ class ShoppingListData(val items : ShoppingListItems) {
     }
 }
 
-data class ShoppingListItems(val items : ArrayList<ShoppingListItem>) {
+data class ShoppingListItems(var items : ArrayList<ShoppingListItem>) {
     companion object {
         fun create(itemNames: Array<String>): ShoppingListItems =
                 ShoppingListItems(ArrayList<ShoppingListItem>(itemNames.map { itemName: String -> ShoppingListItem(itemName, 1) }))
