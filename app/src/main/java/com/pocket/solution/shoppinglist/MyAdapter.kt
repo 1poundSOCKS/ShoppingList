@@ -1,14 +1,16 @@
 package com.pocket.solution.shoppinglist
 
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.text.Editable
+import android.text.TextWatcher
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 
 class MyAdapter() :
-        RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+        androidx.recyclerview.widget.RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     private var data = ShoppingListData()
 
@@ -17,11 +19,23 @@ class MyAdapter() :
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
 
-    class MyViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
+    class MyViewHolder(private val v: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(v) {
 
         fun bind(item : ShoppingListItem)
         {
-            v.textView.text = item.name
+            v.textView.text = Editable.Factory.getInstance().newEditable(item.name)
+            v.textView.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+
+                override fun beforeTextChanged(s: CharSequence, start: Int,
+                                               count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int,
+                                           before: Int, count: Int) {
+                    item.name = s.toString()
+                }
+            })
             v.textView.setTextColor(Color.BLACK)
             v.checkbox_selected.isChecked = item.selected
             v.checkbox_selected.setOnClickListener {

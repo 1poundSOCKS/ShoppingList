@@ -53,4 +53,4 @@ class ShoppingListData() {
     }
 }
 
-data class ShoppingListItem(val name: String, val quantity : Int = 1, var selected: Boolean = false)
+data class ShoppingListItem(var name: String, var quantity : Int = 1, var selected: Boolean = false)

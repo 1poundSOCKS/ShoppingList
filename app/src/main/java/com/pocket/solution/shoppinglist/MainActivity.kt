@@ -1,11 +1,12 @@
 package com.pocket.solution.shoppinglist
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.Log
+import com.google.android.material.snackbar.Snackbar
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,16 +19,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        button_send.setOnClickListener {
-            Log.d("MainActivity", "Add clicked")
-            val newItemName : String = editText.text.toString()
-            adapter.addItem(newItemName)
-            editText.text.clear()
-        }
-
         mobileList.setHasFixedSize(true)
-        mobileList.layoutManager = LinearLayoutManager(this)
+        mobileList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mobileList.adapter = adapter
+
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "New item added to shopping list", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+            adapter.addItem("")
+        }
 
         loadAppData()
     }
