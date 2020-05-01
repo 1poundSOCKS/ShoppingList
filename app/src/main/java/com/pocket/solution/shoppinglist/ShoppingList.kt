@@ -4,49 +4,53 @@ import com.google.gson.GsonBuilder
 
 fun <E> String.convertToArrayList() : ArrayList<E> = GsonBuilder().create().fromJson(this, ArrayList<E>().javaClass)
 
-class ShoppingListData(val items : ShoppingListItems) {
+class ShoppingListData() {
+
+    val items = ArrayList<ShoppingListItem>(emptyList())
 
     val isEmpty : Boolean
-        get() = items.items.size == 0
+        get() = items.size == 0
 
-    fun addItem(name: String) = items.items.add(ShoppingListItem(name, 1))
-    fun serialize(): String = items.convertNamesToJson()
-    fun selectItem(index: Int): Boolean = items.selectItem(index)
+    fun addItem(name: String) = items.add(ShoppingListItem(name, 1))
+
+    fun serialize(): String = convertNamesToJson()
+
+    fun selectItem(index: Int): Boolean {
+        return selectItem(items[index])
+    }
+
     fun deleteSelectedItems() {
-        val remainingItems = items.items.filter { item -> !item.selected }
-        items.items.clear()
-        items.items.addAll(remainingItems)
+        val remainingItems = items.filter { item -> !item.selected }
+        items.clear()
+        items.addAll(remainingItems)
     }
 
-    companion object {
-        fun create(itemNames : Array<String>): ShoppingListData =
-                ShoppingListData(ShoppingListItems.create(itemNames))
+    fun getItem(index: Int) : ShoppingListItem = items[index]
 
-        fun create(data: String): ShoppingListData =
-                ShoppingListData(ShoppingListItems.create(data))
+    fun load(itemNames : Array<String>) {
+        val itemsToLoad = ArrayList<ShoppingListItem>(itemNames.map { itemName: String -> ShoppingListItem(itemName, 1) })
+        load(itemsToLoad)
     }
-}
 
-data class ShoppingListItems(var items : ArrayList<ShoppingListItem>) {
+    fun load(itemsAsJson : String) {
+        val names: List<String> = itemsAsJson.convertToArrayList()
+        val itemsToLoad: List<ShoppingListItem> = names.map { name -> ShoppingListItem(name, 1) }
+        load(itemsToLoad)
+    }
+
+    fun load(itemsToLoad : List<ShoppingListItem>) {
+        items.clear()
+        items.addAll(itemsToLoad)
+    }
+
+    fun convertNamesToJson() : String = GsonBuilder().setPrettyPrinting().create().toJson(items.map { item -> item.name })
+
     companion object {
-        fun create(itemNames: Array<String>): ShoppingListItems =
-                ShoppingListItems(ArrayList<ShoppingListItem>(itemNames.map { itemName: String -> ShoppingListItem(itemName, 1) }))
-
-        fun create(data: String) : ShoppingListItems {
-            val names: List<String> = data.convertToArrayList()
-            val items: List<ShoppingListItem> = names.map { name -> ShoppingListItem(name, 1) }
-            return ShoppingListItems(ArrayList<ShoppingListItem>(items))
+        fun selectItem(item: ShoppingListItem): Boolean {
+            item.selected = !item.selected
+            return item.selected
         }
     }
 }
 
-fun ShoppingListItems.convertNamesToJson() : String = GsonBuilder().setPrettyPrinting().create().toJson(this.items.map { item -> item.name })
-fun ShoppingListItems.getItem(index: Int) : ShoppingListItem = items[index]
-fun ShoppingListItems.selectItem(index: Int): Boolean = items[index].select()
-
 data class ShoppingListItem(val name: String, val quantity : Int = 1, var selected: Boolean = false)
-
-fun ShoppingListItem.select(): Boolean {
-    selected = !selected
-    return selected
-}

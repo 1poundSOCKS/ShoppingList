@@ -49,10 +49,7 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
-            R.id.action_delete -> {
-                adapter.deleteSelectedItems()
-                true
-            }
+            R.id.action_delete -> deleteSelectedItems()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -69,5 +66,18 @@ class MainActivity : AppCompatActivity() {
         val data = adapter.saveAsJson()
         spe.putString("ItemsAsJson", data)
         spe.commit()
+    }
+
+    private fun deleteSelectedItems() : Boolean {
+        adapter.deleteSelectedItems()
+        return true
+    }
+
+    private fun getSelectedItems() : List<Int> {
+        val selectedItems = ArrayList<Int>()
+        for( childIndex in 0..mobileList.childCount ) {
+            val viewHolder = mobileList.getChildViewHolder(mobileList.getChildAt(childIndex))
+        }
+        return selectedItems
     }
 }

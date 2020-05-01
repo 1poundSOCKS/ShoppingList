@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 class MyAdapter() :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
-    private var data: ShoppingListData = ShoppingListData.create(emptyArray())
+    private var data = ShoppingListData()
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -23,15 +23,10 @@ class MyAdapter() :
         {
             v.textView.text = item.name
             v.textView.setTextColor(Color.BLACK)
-            v.textView2.text = item.quantity.toString()
-            v.textView2.setTextColor(Color.BLUE)
-            v.setOnClickListener {
-                if ( item.select() ) {
-                    v.textView.setBackgroundColor(Color.LTGRAY)
-                }
-                else {
-                    v.textView.setBackgroundColor(Color.WHITE)
-                }
+            v.checkbox_selected.isChecked = item.selected
+            v.checkbox_selected.setOnClickListener {
+                item.selected = !item.selected
+                v.checkbox_selected.isChecked = item.selected
             }
         }
     }
@@ -51,7 +46,7 @@ class MyAdapter() :
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         //holder.bind(data.itemName(position))
-        holder.bind(data.items.getItem(position))
+        holder.bind(data.getItem(position))
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -71,15 +66,15 @@ class MyAdapter() :
     fun saveAsJson() : String = data.serialize()
 
     fun loadFromJson(jsonData : String) {
-        data = ShoppingListData.create(jsonData)
+        data.load(jsonData)
         notifyDataSetChanged()
     }
 
     private val ShoppingListData.lastItemIndex: Int
-        get() = items.items.lastIndex
+        get() = items.lastIndex
 
     private val ShoppingListData.itemCount: Int
-        get() = items.items.size
+        get() = items.size
 
-    private fun ShoppingListData.itemName(pos : Int) = items.items[pos].name
+    private fun ShoppingListData.itemName(pos : Int) = items[pos].name
 }
