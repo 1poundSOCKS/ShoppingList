@@ -72,4 +72,5 @@ class ShoppingListData() {
 }
 
 data class ShoppingListItem(var name: String, var quantity : Int = 1, var selected: Boolean = false)
+
 data class IndexedShoppingListItem(val index: Int, val item: ShoppingListItem)

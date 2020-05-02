@@ -39,6 +39,7 @@ class MyAdapter() :
                 }
             })
             v.textView.setTextColor(Color.BLACK)
+            v.textView.requestFocus()
             v.checkbox_selected.isChecked = item.selected
             v.checkbox_selected.setOnClickListener {
                 item.selected = !item.selected
@@ -68,9 +69,10 @@ class MyAdapter() :
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = data.items.size
 
-    fun addItem(itemName : String) {
+    fun addItem(itemName : String) : Int {
         data.addItem(itemName)
         notifyItemInserted(data.items.lastIndex)
+        return data.items.lastIndex
     }
 
     fun deleteSelectedItems() {
