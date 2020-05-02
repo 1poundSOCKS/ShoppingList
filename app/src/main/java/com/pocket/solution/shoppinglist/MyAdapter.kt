@@ -25,7 +25,9 @@ class MyAdapter() :
         {
             v.textView.text = Editable.Factory.getInstance().newEditable(item.name)
             v.textView.addTextChangedListener(object: TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
+                override fun afterTextChanged(s: Editable) {
+
+                }
 
                 override fun beforeTextChanged(s: CharSequence, start: Int,
                                                count: Int, after: Int) {
@@ -64,17 +66,19 @@ class MyAdapter() :
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = data.itemCount
+    override fun getItemCount() = data.items.size
 
     fun addItem(itemName : String) {
         data.addItem(itemName)
-        //notifyItemRangeChanged(data.lastItemIndex, 1)
-        notifyDataSetChanged()
+        notifyItemInserted(data.items.lastIndex)
     }
 
     fun deleteSelectedItems() {
-        data.deleteSelectedItems()
-        notifyDataSetChanged()
+        var deletedItem = data.deleteLastSelectedItem()
+        while ( deletedItem != null ) {
+            notifyItemRemoved(deletedItem.index)
+            deletedItem = data.deleteLastSelectedItem()
+        }
     }
 
     fun saveAsJson() : String = data.serialize()
@@ -83,12 +87,4 @@ class MyAdapter() :
         data.load(jsonData)
         notifyDataSetChanged()
     }
-
-    private val ShoppingListData.lastItemIndex: Int
-        get() = items.lastIndex
-
-    private val ShoppingListData.itemCount: Int
-        get() = items.size
-
-    private fun ShoppingListData.itemName(pos : Int) = items[pos].name
 }

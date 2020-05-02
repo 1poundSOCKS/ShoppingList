@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity() {
         mobileList.adapter = adapter
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "New item added to shopping list", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
             adapter.addItem("")
         }
 

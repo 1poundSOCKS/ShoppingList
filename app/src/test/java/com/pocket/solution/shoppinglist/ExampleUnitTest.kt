@@ -98,33 +98,111 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun deleteWithNothingSelected_works() {
+    fun deleteSelectedItems_works() {
         val data = ShoppingListData()
-        data.load(arrayOf("bananas", "eggs", "paper"))
         data.deleteSelectedItems()
-        assertTrue(data.items == listOf(
-                ShoppingListItem("bananas"),
-                ShoppingListItem("eggs"),
-                ShoppingListItem("paper")))
+        assertTrue("empty list", data.isEmpty)
+
+        data.load(listOf(ShoppingListItem("bananas", 1, false)))
+        data.deleteSelectedItems()
+        assertTrue("no items selected",
+                data.items == listOf(ShoppingListItem("bananas")))
+
+        data.load(listOf(ShoppingListItem("bananas", 1, true)))
+        data.deleteSelectedItems()
+        assertTrue("delete only item", data.isEmpty)
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, true),
+                ShoppingListItem("eggs", 1, true),
+                ShoppingListItem("tea bags", 1, true)))
+        data.deleteSelectedItems()
+        assertTrue("delete all items", data.isEmpty)
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, true),
+                ShoppingListItem("eggs", 1, false),
+                ShoppingListItem("tea bags", 1, false)))
+        data.deleteSelectedItems()
+        assertTrue("delete first item",
+                data.items == listOf(
+                        ShoppingListItem("eggs", 1, false),
+                        ShoppingListItem("tea bags",1, false)))
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, false),
+                ShoppingListItem("eggs", 1, true),
+                ShoppingListItem("tea bags", 1, false)))
+        data.deleteSelectedItems()
+        assertTrue("delete last item",
+                data.items == listOf(
+                        ShoppingListItem("bananas", 1, false),
+                        ShoppingListItem("tea bags",1, false)))
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, false),
+                ShoppingListItem("eggs", 1, true),
+                ShoppingListItem("tea bags", 1, false)))
+        data.deleteSelectedItems()
+        assertTrue("delete middle item",
+                data.items == listOf(
+                        ShoppingListItem("bananas", 1, false),
+                        ShoppingListItem("tea bags",1, false)))
     }
 
     @Test
-    fun deleteOnlyItem_works() {
+    fun getSelectedItems_works() {
         val data = ShoppingListData()
-        data.load(arrayOf("bananas"))
-        data.selectItem(0)
-        data.deleteSelectedItems()
-        assertTrue(data.isEmpty)
+        assertTrue("empty list", data.getSelectedItems().isEmpty())
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, false),
+                ShoppingListItem("eggs", 1, false),
+                ShoppingListItem("tea bags", 1, false))
+        )
+        assertTrue("no selected items", data.getSelectedItems().isEmpty())
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, true),
+                ShoppingListItem("eggs", 1, true),
+                ShoppingListItem("tea bags", 1, true)))
+        assertTrue("all items selected", data.getSelectedItems() == listOf(
+                IndexedShoppingListItem(0, ShoppingListItem("bananas", 1, true)),
+                IndexedShoppingListItem(1, ShoppingListItem("eggs", 1, true)),
+                IndexedShoppingListItem(2, ShoppingListItem("tea bags",1, true)))
+        )
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, true),
+                ShoppingListItem("eggs", 1, false),
+                ShoppingListItem("tea bags", 1, false)))
+        assertTrue("first item selected", data.getSelectedItems() == listOf(
+                IndexedShoppingListItem(0, ShoppingListItem("bananas", 1, true)))
+        )
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, false),
+                ShoppingListItem("eggs", 1, false),
+                ShoppingListItem("tea bags", 1, true)))
+        assertTrue("last item selected", data.getSelectedItems() == listOf(
+                IndexedShoppingListItem(2, ShoppingListItem("tea bags", 1, true)))
+        )
     }
 
     @Test
-    fun deleteLastItem_works() {
+    fun deleteLastSelectedItem_works() {
         val data = ShoppingListData()
-        data.load(arrayOf("bananas", "eggs", "paper"))
-        data.selectItem(2)
-        data.deleteSelectedItems()
-        assertTrue(data.items == listOf(
-                ShoppingListItem("bananas"),
-                ShoppingListItem("eggs")))
+        assertTrue("empty list", data.deleteLastSelectedItem() == null)
+
+        data.load(listOf(
+                ShoppingListItem("bananas", 1, true),
+                ShoppingListItem("eggs", 1, true),
+                ShoppingListItem("tea bags", 1, true)))
+
+        var deletedItem = data.deleteLastSelectedItem()
+        assertTrue("return last item", deletedItem == IndexedShoppingListItem(2, ShoppingListItem("tea bags", 1, true)))
+        assertTrue("item deleted", data.items == listOf(
+                ShoppingListItem("bananas", 1, true),
+                ShoppingListItem("eggs", 1, true)))
     }
 }

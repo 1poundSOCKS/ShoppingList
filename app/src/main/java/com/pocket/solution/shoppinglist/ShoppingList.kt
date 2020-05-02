@@ -19,10 +19,28 @@ class ShoppingListData() {
         return selectItem(items[index])
     }
 
+    fun getIndexedItems(): List<IndexedShoppingListItem> {
+        var index = 0
+        return ArrayList<IndexedShoppingListItem>(items.map { item -> IndexedShoppingListItem(index++, item) })
+    }
+
+    fun getSelectedItems() : List<IndexedShoppingListItem> = getIndexedItems().filter { indexedItem -> indexedItem.item.selected }
+
     fun deleteSelectedItems() {
         val remainingItems = items.filter { item -> !item.selected }
         items.clear()
         items.addAll(remainingItems)
+    }
+
+    fun deleteLastSelectedItem() : IndexedShoppingListItem? {
+        val selectedItems = getSelectedItems()
+        try {
+            items.removeAt(selectedItems.last().index)
+        }
+        catch( e: NoSuchElementException ) {
+            return null
+        }
+        return selectedItems.last()
     }
 
     fun getItem(index: Int) : ShoppingListItem = items[index]
@@ -54,3 +72,4 @@ class ShoppingListData() {
 }
 
 data class ShoppingListItem(var name: String, var quantity : Int = 1, var selected: Boolean = false)
+data class IndexedShoppingListItem(val index: Int, val item: ShoppingListItem)
