@@ -43,6 +43,12 @@ class ShoppingListData() {
         return selectedItems.last()
     }
 
+    fun selectAllItems() {
+        for ( item in items ) {
+            item.selected = true
+        }
+    }
+
     fun getItem(index: Int) : ShoppingListItem = items[index]
 
     fun load(itemNames : Array<String>) {

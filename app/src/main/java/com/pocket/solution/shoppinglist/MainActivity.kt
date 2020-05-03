@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         loadAppData()
+        //adapter.loadTestData()
     }
 
     override fun onStop() {
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> true
             R.id.action_delete -> deleteSelectedItems()
+            R.id.action_select_all -> selectAllItems()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -68,6 +70,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun deleteSelectedItems() : Boolean {
         adapter.deleteSelectedItems()
+        return true
+    }
+
+    private fun selectAllItems() : Boolean {
+        adapter.selectAllItems()
         return true
     }
 
