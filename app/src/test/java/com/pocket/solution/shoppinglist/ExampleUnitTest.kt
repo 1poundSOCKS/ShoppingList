@@ -56,6 +56,44 @@ class ExampleUnitTest {
         assertTrue("ShoppingListData serialisation unsuccessful", success)
     }
 
+/*
+    @Test
+    fun testSaveAndLoadToJson_works() {
+        val data = ShoppingListData()
+        data.load(arrayOf("bananas", "eggs", "paper", "berries", "chicken", "tea bags", "milk"))
+        val savedData = ArrayList<String>()
+        data.save() { nextLine -> savedData.add(nextLine) }
+
+        val dataCopy = ShoppingListData()
+        dataCopy.load() {
+            if( savedData.size == 0)
+                null
+            else {
+                savedData[0]
+                savedData.removeAt(0)
+            }
+        }
+
+        assertEquals("data persisted", data.items, dataCopy.items)
+    }
+*/
+
+    @Test
+    fun testSaveAndLoadToJson_works() {
+        val data = ShoppingListData()
+        data.load(arrayOf("bananas", "eggs", "paper", "berries", "chicken", "tea bags", "milk"))
+
+        val serializedData = data.serializeAsJson()
+
+        val stringData = MainActivity().listToString(serializedData)
+        val listData = MainActivity().stringToList(stringData)
+
+        val dataCopy = ShoppingListData()
+        dataCopy.loadFromJson(listData)
+
+        assertEquals("data persisted", data.items, dataCopy.items)
+    }
+
     @Test
     fun emptyShoppingList_works() {
         val data = ShoppingListData()

@@ -106,10 +106,19 @@ class MyAdapter() :
         notifyDataSetChanged()
     }
 
+/*
     fun saveAsJson() : String = data.serialize()
 
     fun loadFromJson(jsonData : String) {
         data.load(jsonData)
+        notifyDataSetChanged()
+    }
+*/
+
+    fun save() : List<String> = data.serializeAsJson()
+
+    fun load(serializedData: List<String>) {
+        data.loadFromJson(serializedData)
         notifyDataSetChanged()
     }
 

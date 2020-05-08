@@ -1,13 +1,9 @@
 package com.pocket.solution.shoppinglist
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.util.Log
-import com.google.android.material.snackbar.Snackbar
-
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -27,13 +23,12 @@ class MainActivity : AppCompatActivity() {
             adapter.addItem("")
         }
 
-        loadAppData()
-        //adapter.loadTestData()
+        loadAppDataFromFile()
     }
 
     override fun onStop() {
         super.onStop()
-        saveAppData()
+        saveAppDataToFile()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -54,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+/*
     private fun loadAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
         val loadDataString = sp.getString("ItemsAsJson", null)
@@ -66,6 +62,39 @@ class MainActivity : AppCompatActivity() {
         val data = adapter.saveAsJson()
         spe.putString("ItemsAsJson", data)
         spe.commit()
+    }
+*/
+
+    fun listToString(data: List<String>) = data.fold("", { acc, string -> acc + string } )
+
+    fun stringToList(data: String) : List<String> {
+        val jsonRecords = data.split("}{")
+        val nonEmptyRecords = jsonRecords.filter { record -> record.isNotEmpty() }
+        return nonEmptyRecords.map {
+            var newRecord = ""
+            if (it[0] != '{') newRecord += "{"
+            newRecord += it
+            if (it.reversed()[0] != '}') newRecord += "}"
+            newRecord
+        }
+    }
+
+    private fun saveAppDataToFile() {
+        val data = adapter.save()
+        val concatenatedData = listToString(data)
+        val outputStream = applicationContext.openFileOutput("default", android.content.Context.MODE_PRIVATE)
+        outputStream.write(concatenatedData.toByteArray())
+    }
+
+    private fun loadAppDataFromFile() {
+        try {
+            val inputStream = applicationContext.openFileInput("default")
+            val inputData = inputStream.readBytes()
+            val inputDataString: String = String(inputData)
+            val inputDataRecords = stringToList(inputDataString)
+            adapter.load(inputDataRecords)
+        }
+        catch(e : java.io.FileNotFoundException) {}
     }
 
     private fun deleteSelectedItems() : Boolean {

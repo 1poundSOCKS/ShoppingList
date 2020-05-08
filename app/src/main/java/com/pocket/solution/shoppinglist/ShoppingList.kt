@@ -67,7 +67,32 @@ class ShoppingListData() {
         items.addAll(itemsToLoad)
     }
 
-    fun convertNamesToJson() : String = GsonBuilder().setPrettyPrinting().create().toJson(items.map { item -> item.name })
+    fun save(f: (String) -> Boolean ) {
+        val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
+        for( item in items ) {
+            f(gsonBuilder.toJson(item))
+        }
+    }
+
+    fun serializeAsJson() : List<String> {
+        val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
+        val serializedData = arrayListOf<String>()
+        for( item in items ) {
+            serializedData.add((gsonBuilder.toJson(item)))
+        }
+        return serializedData
+    }
+
+    fun loadFromJson(data: List<String>) {
+        items.clear()
+        val gsonBuilder = GsonBuilder().create()
+        for( record in data ) {
+            val nextItem = gsonBuilder.fromJson(record, ShoppingListItem("").javaClass)
+            items.add(nextItem)
+        }
+    }
+
+    private fun convertNamesToJson() : String = GsonBuilder().setPrettyPrinting().create().toJson(items.map { item -> item.name })
 
     companion object {
         fun selectItem(item: ShoppingListItem): Boolean {
