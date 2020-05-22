@@ -43,6 +43,30 @@ class ExampleUnitTest {
     }
 
     @Test
+    fun swapItems_works() {
+        val data = ShoppingListData()
+        data.load(arrayOf("bananas", "eggs"))
+        data.swapItems(0,1)
+        assertEquals("0 to 1", data.items, ShoppingListData().load(arrayOf("eggs", "bananas")).items)
+
+        data.swapItems(1,0)
+        assertEquals("1 to 0", data.items, ShoppingListData().load(arrayOf("bananas", "eggs")).items)
+
+        data.load(arrayOf("bananas", "eggs", "paper", "berries", "chicken", "tea bags", "milk"))
+        data.swapItems(0,6)
+        assertEquals("0 to 6", data.items, ShoppingListData().load(arrayOf("milk", "eggs", "paper", "berries", "chicken", "tea bags", "bananas")).items)
+
+        data.swapItems(6,0)
+        assertEquals("0 to 6", data.items, ShoppingListData().load(arrayOf("bananas", "eggs", "paper", "berries", "chicken", "tea bags", "milk")).items)
+
+        data.swapItems(3,4)
+        assertEquals("3 to 4", data.items, ShoppingListData().load(arrayOf("bananas", "eggs", "paper", "chicken", "berries", "tea bags", "milk")).items)
+
+        data.swapItems(5,2)
+        assertEquals("5 to 2", data.items, ShoppingListData().load(arrayOf("bananas", "eggs", "tea bags", "chicken", "berries", "paper", "milk")).items)
+    }
+
+    @Test
     fun testJsonStringLoad() {
         val listOfItems = "[\"bananas\", \"eggs\", \"paper\"]".convertToArrayList<String>()
         assertEquals(listOfItems, listOf("bananas", "eggs", "paper"))

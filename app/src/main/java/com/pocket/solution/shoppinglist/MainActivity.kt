@@ -8,12 +8,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var adapter = MyAdapter()
+    lateinit var adapter: MyViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
+
+        adapter = MyViewAdapter()
+        adapter.createTouchHelper(mobileList)
 
         mobileList.setHasFixedSize(true)
         mobileList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
@@ -32,15 +35,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             R.id.action_delete -> deleteSelectedItems()
@@ -49,21 +48,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-/*
     private fun loadAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
-        val loadDataString = sp.getString("ItemsAsJson", null)
-        adapter.loadFromJson(loadDataString)
+        val loadDataString = sp.getString("Test", null)
     }
 
     private fun saveAppData() {
         val sp = getSharedPreferences("ShoppingListData", MODE_PRIVATE)
         val spe = sp.edit()
-        val data = adapter.saveAsJson()
-        spe.putString("ItemsAsJson", data)
+        spe.putString("Test", "Version 1.0")
         spe.commit()
     }
-*/
 
     fun listToString(data: List<String>) = data.fold("", { acc, string -> acc + string } )
 
@@ -80,10 +75,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveAppDataToFile() {
-        val data = adapter.save()
-        val concatenatedData = listToString(data)
-        val outputStream = applicationContext.openFileOutput("default", android.content.Context.MODE_PRIVATE)
-        outputStream.write(concatenatedData.toByteArray())
+        try {
+            val data = adapter.save()
+            val concatenatedData = listToString(data)
+            val outputStream = applicationContext.openFileOutput("default", android.content.Context.MODE_PRIVATE)
+            outputStream.write(concatenatedData.toByteArray())
+        }
+        catch(e : java.io.FileNotFoundException ) {}
+        catch(e : java.io.IOException) {}
     }
 
     private fun loadAppDataFromFile() {
@@ -95,6 +94,7 @@ class MainActivity : AppCompatActivity() {
             adapter.load(inputDataRecords)
         }
         catch(e : java.io.FileNotFoundException) {}
+        catch(e : java.io.IOException) {}
     }
 
     private fun deleteSelectedItems() : Boolean {

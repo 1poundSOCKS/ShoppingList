@@ -1,6 +1,9 @@
 package com.pocket.solution.shoppinglist
 
 import com.google.gson.GsonBuilder
+import java.util.*
+import kotlin.NoSuchElementException
+import kotlin.collections.ArrayList
 
 fun <E> String.convertToArrayList() : ArrayList<E> = GsonBuilder().create().fromJson(this, ArrayList<E>().javaClass)
 
@@ -14,6 +17,10 @@ class ShoppingListData() {
     fun addItem(name: String) = items.add(ShoppingListItem(name, 1))
 
     fun serialize(): String = convertNamesToJson()
+
+    fun deleteItem(position: Int) {
+        items.removeAt(position)
+    }
 
     fun selectItem(index: Int): Boolean {
         return selectItem(items[index])
@@ -51,9 +58,14 @@ class ShoppingListData() {
 
     fun getItem(index: Int) : ShoppingListItem = items[index]
 
-    fun load(itemNames : Array<String>) {
+    fun swapItems(startIndex: Int, endIndex: Int) {
+        Collections.swap(items, startIndex, endIndex)
+    }
+
+    fun load(itemNames : Array<String>): ShoppingListData {
         val itemsToLoad = ArrayList<ShoppingListItem>(itemNames.map { itemName: String -> ShoppingListItem(itemName, 1) })
         load(itemsToLoad)
+        return this
     }
 
     fun load(itemsAsJson : String) {
