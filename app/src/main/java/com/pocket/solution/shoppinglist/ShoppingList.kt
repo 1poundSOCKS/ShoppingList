@@ -62,6 +62,10 @@ class ShoppingListData() {
         Collections.swap(items, startIndex, endIndex)
     }
 
+    fun clearItems() {
+        items.clear()
+    }
+
     fun load(itemNames : Array<String>): ShoppingListData {
         val itemsToLoad = ArrayList<ShoppingListItem>(itemNames.map { itemName: String -> ShoppingListItem(itemName, 1) })
         load(itemsToLoad)
@@ -77,13 +81,6 @@ class ShoppingListData() {
     fun load(itemsToLoad : List<ShoppingListItem>) {
         items.clear()
         items.addAll(itemsToLoad)
-    }
-
-    fun save(f: (String) -> Boolean ) {
-        val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
-        for( item in items ) {
-            f(gsonBuilder.toJson(item))
-        }
     }
 
     fun serializeAsJson() : List<String> {

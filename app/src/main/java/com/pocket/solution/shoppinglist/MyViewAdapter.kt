@@ -49,9 +49,7 @@ class MyViewAdapter() :
             focusItem = -1
         }
 
-        v.checkbox_selected.isChecked = item.selected
-
-        v.textView.setOnTouchListener { _, event ->
+        v.imageView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 touchHelper.startDrag(holder)
             }
@@ -86,7 +84,7 @@ class MyViewAdapter() :
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    fun deleteRow(position: Int, direction: Int) {
+    fun deleteRow(position: Int) {
         data.deleteItem(position)
         notifyItemRemoved(position)
     }
@@ -101,16 +99,8 @@ class MyViewAdapter() :
         return data.items.lastIndex
     }
 
-    fun deleteSelectedItems() {
-        var deletedItem = data.deleteLastSelectedItem()
-        while ( deletedItem != null ) {
-            notifyItemRemoved(deletedItem.index)
-            deletedItem = data.deleteLastSelectedItem()
-        }
-    }
-
-    fun selectAllItems() {
-        data.selectAllItems()
+    fun clearList() {
+        data.clearItems()
         notifyDataSetChanged()
     }
 
@@ -120,17 +110,13 @@ class MyViewAdapter() :
         data.loadFromJson(serializedData)
         notifyDataSetChanged()
     }
-
-    fun loadTestData() {
-        data.load(arrayOf("1", "2","3","4","5","6","7","8","9","10","11"))
-    }
 }
 
 class ItemTouchHelperCallback(private val adapter: MyViewAdapter) : ItemTouchHelper.Callback() {
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-        val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
+        val swipeFlags = ItemTouchHelper.RIGHT
         return makeMovementFlags(dragFlags, swipeFlags)
     }
 
@@ -164,6 +150,6 @@ class ItemTouchHelperCallback(private val adapter: MyViewAdapter) : ItemTouchHel
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        adapter.deleteRow(viewHolder.adapterPosition, direction)
+        adapter.deleteRow(viewHolder.adapterPosition)
     }
 }

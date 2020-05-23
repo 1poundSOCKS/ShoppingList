@@ -42,8 +42,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
-            R.id.action_delete -> deleteSelectedItems()
-            R.id.action_select_all -> selectAllItems()
+            R.id.clear_list -> clearList()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -97,21 +96,8 @@ class MainActivity : AppCompatActivity() {
         catch(e : java.io.IOException) {}
     }
 
-    private fun deleteSelectedItems() : Boolean {
-        adapter.deleteSelectedItems()
+    private fun clearList() : Boolean {
+        adapter.clearList()
         return true
-    }
-
-    private fun selectAllItems() : Boolean {
-        adapter.selectAllItems()
-        return true
-    }
-
-    private fun getSelectedItems() : List<Int> {
-        val selectedItems = ArrayList<Int>()
-        for( childIndex in 0..mobileList.childCount ) {
-            val viewHolder = mobileList.getChildViewHolder(mobileList.getChildAt(childIndex))
-        }
-        return selectedItems
     }
 }
